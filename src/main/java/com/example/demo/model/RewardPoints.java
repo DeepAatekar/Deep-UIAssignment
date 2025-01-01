@@ -28,6 +28,8 @@ public class RewardPoints
     @Min(value = 0, message = "Points must be greater than or equal to 0")
     private Integer points;
 
+	
+
 	public Long getId() {
 		return id;
 	}
