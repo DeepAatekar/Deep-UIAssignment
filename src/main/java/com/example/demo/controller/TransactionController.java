@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +45,15 @@ public class TransactionController
 		logger.info("Adding transaction: {}", transaction);
 		CustomerTransaction savedTransaction = transactionService.addTransaction(transaction);
 		logger.info("Saved Transaction: {}", savedTransaction);
-		Integer rewardPoints = transactionService.getRewardPoints(transaction.getCustomerId());
-		logger.info("Reward Points: {}", rewardPoints);
-		TransactionResponse response = new TransactionResponse(savedTransaction, rewardPoints);
+		//Integer rewardPoints = transactionService.getRewardPoints(transaction.getCustomerId());
+		Integer totalRewardPoints = transactionService.getRewardPoints(transaction.getCustomerId());
+		logger.info("Total Reward Points: {}", totalRewardPoints);
+		
+		Map<Month, Integer> monthlyRewardPoints = transactionService.getMonthlyRewardPoints(transaction.getCustomerId());
+		logger.info("Monthly Reward Points: {}",monthlyRewardPoints);
+		
+		//TransactionResponse response = new TransactionResponse(savedTransaction, rewardPoints);
+		TransactionResponse response = new TransactionResponse(savedTransaction, totalRewardPoints,monthlyRewardPoints);
 		logger.info("Transaction Response: {}", response);
 		
 		

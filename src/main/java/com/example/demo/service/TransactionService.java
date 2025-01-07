@@ -33,8 +33,10 @@ public class TransactionService
 	    public CustomerTransaction addTransaction(CustomerTransaction transaction) 
 	    {
 	    	logger.info("addTransaction.transaction: {}", transaction);
-	        CustomerTransaction savedTransaction = transactionRepository.save(transaction);
+	        
+	    	CustomerTransaction savedTransaction = transactionRepository.save(transaction);
 	        logger.info("addTransaction.savedTransaction: {}", savedTransaction);
+	        
 	        calculateRewardPoints(savedTransaction);
 	        
 	       
@@ -60,9 +62,14 @@ public class TransactionService
 	    
 	    public int getRewardPoints(Long customerId) {
 	    	 logger.info("CustomerId which get from method argument: {}", customerId);
-	        Optional<RewardPoints> rewardPointsList = rewardPointsRepository.findById(customerId);
-	        logger.info("getRewardPoints.rewardPointsList: {}", rewardPointsList);
-	        return rewardPointsList.stream().mapToInt(RewardPoints::getPoints).sum();
+	        //Optional<RewardPoints> rewardPointsList = rewardPointsRepository.findById(customerId);
+	        List<RewardPoints> rewardPointsList = rewardPointsRepository.findAll()
+	        		.stream()
+	        		.filter(reward -> reward.getCustomerId().equals(customerId))
+	        		.collect(Collectors.toList());
+	    	 logger.info("getRewardPoints.rewardPointsList: {}", rewardPointsList);
+	        
+	    	 return rewardPointsList.stream().mapToInt(RewardPoints::getPoints).sum();
 	    }
 
 	    public List<RewardPoints> getAllRewardPoints() {
@@ -71,7 +78,7 @@ public class TransactionService
 
 	    
 	    
-	    public Map<Long, Map<Month,Integer>> calculateMonthlyRewardPoints()
+	   /* public Map<Long, Map<Month,Integer>> calculateMonthlyRewardPoints()
 	    {
 	    	
 	    	//Fetch all transaction within the last  three months
@@ -92,9 +99,27 @@ public class TransactionService
 							));
 	    	
 	    }
+	    */
+	    
+	    public Map<Month, Integer> getMonthlyRewardPoints(Long customerId)
+	    {
+	    	logger.info("Fetching monthly reward points for customerId: {}", customerId);
+	    	
+	    	List<RewardPoints> rewardPointsList = rewardPointsRepository.findAll()
+	    			.stream()
+	    			.filter(reward->reward.getCustomerId().equals(customerId))
+	    			.collect(Collectors.toList());
+	    	
+	    	return rewardPointsList.stream()
+	    			.collect(Collectors.groupingBy(
+	    					reward -> Month.of(reward.getMonth()),
+	    					Collectors.summingInt(RewardPoints::getPoints)
+	    					));
+	    	
+	    }
 	    
 	    
-	    private int calculateRewardPoints(CustomerTransaction transaction) {
+	        private int calculateRewardPoints(CustomerTransaction transaction) {
 	        double amount = transaction.getAmount();
 	        int points = 0;
 	        
@@ -134,12 +159,7 @@ public class TransactionService
 	        
 	    
 
-	    private Map<Long, Integer> calculateTotalRewardPoints(Map<Long, Map<Month, Integer>> monthlyRewards)
-	    {
-			return monthlyRewards.entrySet().stream()
-					.collect(Collectors.toMap(Map.Entry::getKey, 
-							e->e.getValue().values().stream().mapToInt(Integer::intValue).sum()));
-		}
+	    
 	    
 	    
 	    
