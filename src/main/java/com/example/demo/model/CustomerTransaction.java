@@ -57,6 +57,12 @@ public class CustomerTransaction
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
+
+	@Override
+	public String toString() {
+		return "CustomerTransaction [id=" + id + ", customerId=" + customerId + ", amount=" + amount + ", date=" + date
+				+ "]";
+	}
     
     
     

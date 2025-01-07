@@ -69,6 +69,12 @@ public class RewardPoints
 	public void setPoints(Integer points) {
 		this.points = points;
 	}
+
+	@Override
+	public String toString() {
+		return "RewardPoints [id=" + id + ", customerId=" + customerId + ", month=" + month + ", year=" + year
+				+ ", points=" + points + "]";
+	}
     
     
     

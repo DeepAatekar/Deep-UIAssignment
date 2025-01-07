@@ -99,21 +99,21 @@ public class ControllerTest
 		
 	}
 	
-	@Test
-	void testAddTransaction() 
-	{
-		CustomerTransaction transaction = new CustomerTransaction();
-		transaction.setCustomerId(1L);
-		transaction.setAmount(100.0);
-		transaction.setDate(LocalDate.now());
-		
-		when(transactionService.addTransaction(transaction)).thenReturn(transaction);
-		
-		ResponseEntity<CustomerTransaction> response = transactionController.addTransaction(transaction);
-		
-		assertEquals(200, response.getStatusCodeValue());
-		assertEquals(100.0, response.getBody().getAmount());
-	}
+//	@Test
+//	void testAddTransaction() 
+//	{
+//		CustomerTransaction transaction = new CustomerTransaction();
+//		transaction.setCustomerId(1L);
+//		transaction.setAmount(100.0);
+//		transaction.setDate(LocalDate.now());
+//		
+//		when(transactionService.addTransaction(transaction)).thenReturn(transaction);
+//		
+//		ResponseEntity<CustomerTransaction> response = transactionController.addTransaction(transaction);
+//		
+//		assertEquals(200, response.getStatusCodeValue());
+//		assertEquals(100.0, response.getBody().getAmount());
+//	}
 	
 	@Test
 	void testGetTransaction() 

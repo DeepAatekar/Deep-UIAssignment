@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.TransactionResponse;
 import com.example.demo.model.CustomerTransaction;
 import com.example.demo.model.RewardPoints;
 import com.example.demo.service.TransactionService;
@@ -23,6 +26,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/transactions")
 public class TransactionController 
 {
+	private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+	
 	@Autowired
     private TransactionService transactionService;
 	
@@ -33,9 +38,18 @@ public class TransactionController
 	}
 	
 	@PostMapping("/add")
-    public ResponseEntity<CustomerTransaction> addTransaction(@Valid @RequestBody CustomerTransaction transaction)
+    public ResponseEntity<TransactionResponse> addTransaction(@Valid @RequestBody CustomerTransaction transaction)
 	{
-        return ResponseEntity.ok(transactionService.addTransaction(transaction));
+		logger.info("Adding transaction: {}", transaction);
+		CustomerTransaction savedTransaction = transactionService.addTransaction(transaction);
+		logger.info("Saved Transaction: {}", savedTransaction);
+		Integer rewardPoints = transactionService.getRewardPoints(transaction.getCustomerId());
+		logger.info("Reward Points: {}", rewardPoints);
+		TransactionResponse response = new TransactionResponse(savedTransaction, rewardPoints);
+		logger.info("Transaction Response: {}", response);
+		
+		
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
