@@ -25,7 +25,8 @@ public class SecurityConfig
 	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    	return http
 	            .csrf(csrf->csrf.disable())
-	            .authorizeHttpRequests(auth->auth.requestMatchers("/customers/**","/swagger-ui/**","/v3/api-docs/**","zones/**").permitAll()
+	            .authorizeHttpRequests(auth->auth.requestMatchers("/customers/**","/swagger-ui/**","/v3/api-docs/**","/zones/**","/user/**").permitAll()
+	            		.requestMatchers("/transactions/edit/**","/transactionsdelete/**").hasRole("ADMIN")
 	    	            .anyRequest().authenticated())
 	         /*   .authorizeHttpRequests(auth -> auth
 	                    .anyRequest().permitAll()) */
