@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig
 {
 	    @Bean
@@ -26,7 +29,7 @@ public class SecurityConfig
 	    	return http
 	            .csrf(csrf->csrf.disable())
 	            .authorizeHttpRequests(auth->auth.requestMatchers("/customers/**","/swagger-ui/**","/v3/api-docs/**","/zones/**","/user/**").permitAll()
-	            		.requestMatchers("/transactions/edit/**","/transactionsdelete/**").hasRole("ADMIN")
+	            		.requestMatchers("/transactions/edit/**","/transactions/delete/**").hasRole("ADMIN")
 	    	            .anyRequest().authenticated())
 	         /*   .authorizeHttpRequests(auth -> auth
 	                    .anyRequest().permitAll()) */
