@@ -28,7 +28,7 @@ public class CustomerService
 	public Customer registerCustomer(Customer customer) 
 	{
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customer.setRoles("ROLE_USER");
+        //customer.setRoles("ROLE_USER");
         
         Long zoneId = customer.getZone().getId();
         Optional<Zone> zone = zoneRepository.findById(zoneId);
