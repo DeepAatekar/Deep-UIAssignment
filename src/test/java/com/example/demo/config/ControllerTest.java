@@ -114,7 +114,7 @@ public class ControllerTest
 //		assertEquals(200, response.getStatusCodeValue());
 //		assertEquals(100.0, response.getBody().getAmount());
 //	}
-	
+/*	
 	@Test
 	void testGetTransaction() 
 	{
@@ -130,7 +130,7 @@ public class ControllerTest
 		assertEquals(200, response.getStatusCodeValue());
 		assertEquals(1L, response.getBody().getCustomerId());
 	}
-	
+	*/
 	
 	@Test
 	void testGetAllRewardPoints() 

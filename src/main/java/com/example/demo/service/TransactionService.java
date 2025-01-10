@@ -47,10 +47,14 @@ public class TransactionService
 	        return transactionRepository.findById(id).orElse(null);
 	    }
 
-	    public CustomerTransaction editTransaction(Long id, CustomerTransaction transaction) {
-	        if (transactionRepository.existsById(id)) {
+	    public CustomerTransaction editTransaction(Long id, CustomerTransaction transaction)
+	    {
+	        if (transactionRepository.existsById(id))
+	        {
 	            transaction.setId(id);
-	            return transactionRepository.save(transaction);
+	            CustomerTransaction savedTransaction = transactionRepository.save(transaction);
+	            calculateRewardPoints(savedTransaction);
+	            return savedTransaction;
 	        }
 	        return null;
 	    }

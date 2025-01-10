@@ -62,14 +62,24 @@ public class TransactionController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerTransaction> getTransaction(@PathVariable Long id) {
-        return ResponseEntity.ok(transactionService.getTransaction(id));
+    public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id) {
+    	CustomerTransaction getTranscation = transactionService.getTransaction(id);
+    	Integer totalRewardPoints = transactionService.getRewardPoints(getTranscation.getCustomerId());
+    	Map<Month, Integer> monthlyRewardPoints = transactionService.getMonthlyRewardPoints(getTranscation.getCustomerId());
+    	TransactionResponse response = new TransactionResponse(getTranscation, totalRewardPoints,monthlyRewardPoints);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CustomerTransaction> editTransaction(@PathVariable Long id, @RequestBody CustomerTransaction transaction) {
-        return ResponseEntity.ok(transactionService.editTransaction(id, transaction));
+    public ResponseEntity<TransactionResponse> editTransaction(@PathVariable Long id, @RequestBody CustomerTransaction transaction) {
+        CustomerTransaction updatedTranansaction = transactionService.editTransaction(id, transaction);
+        Integer totalRewardPoints = transactionService.getRewardPoints(updatedTranansaction.getCustomerId());
+    	Map<Month, Integer> monthlyRewardPoints = transactionService.getMonthlyRewardPoints(updatedTranansaction.getCustomerId());
+    	TransactionResponse response = new TransactionResponse(updatedTranansaction, totalRewardPoints,monthlyRewardPoints);
+        return ResponseEntity.ok(response);
+        
+    	
     }
 
     @DeleteMapping("/delete/{id}")
