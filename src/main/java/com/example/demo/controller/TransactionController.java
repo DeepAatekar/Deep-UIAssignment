@@ -23,10 +23,16 @@ import com.example.demo.model.CustomerTransaction;
 import com.example.demo.model.RewardPoints;
 import com.example.demo.service.TransactionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/transactions")
+@Tag(name = "Transaction API", description = "Endpoints for managing customer transactions and rewards")
 public class TransactionController 
 {
 	private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
@@ -34,13 +40,22 @@ public class TransactionController
 	@Autowired
     private TransactionService transactionService;
 	
+	@Operation(summary = "Test endpoint", description = "A simple secured test endpoint for transactions")
+	@ApiResponse(responseCode = "200", description = "Test Successful")
 	@GetMapping("/add-transection")
 	public String addTransection() 
 	{
 		return "Hello this is secured end point in transaction";
 	}
 	
+	
+	@Operation(summary = "Add a new transaction", description = "Adds a new transaction record and calculate reward points")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Transaction added successfully"),
+			@ApiResponse(responseCode = "400", description = "Invalid input data")
+	})
 	@PostMapping("/add")
+	@SecurityRequirement(name = "basicAuth")
     public ResponseEntity<TransactionResponse> addTransaction(@Valid @RequestBody CustomerTransaction transaction)
 	{
 		logger.info("Adding transaction: {}", transaction);
@@ -60,8 +75,15 @@ public class TransactionController
 		
         return ResponseEntity.ok(response);
     }
+	
+	
 
-    @GetMapping("/{id}")
+	@Operation(summary = "Get transaction by ID", description = "Fetches transaction by its ID and calculates reward points")
+    @ApiResponses(value = {
+    		@ApiResponse(responseCode = "200", description = "Trasaction fetched successfully"),
+    		@ApiResponse(responseCode = "404", description = "Transaction not found")
+    })
+	@GetMapping("/{id}")
     public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id) {
     	CustomerTransaction getTranscation = transactionService.getTransaction(id);
     	Integer totalRewardPoints = transactionService.getRewardPoints(getTranscation.getCustomerId());
@@ -70,8 +92,14 @@ public class TransactionController
         return ResponseEntity.ok(response);
     }
 
+	@Operation(summary = "Edit a transaction", description = "Allow admin to edit transaction")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Transaction updated successfully"),
+			@ApiResponse(responseCode = "403", description = "Forbidden for non admin user")
+	})
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+	@SecurityRequirement(name = "basicAuth")
     public ResponseEntity<TransactionResponse> editTransaction(@PathVariable Long id, @RequestBody CustomerTransaction transaction) {
         CustomerTransaction updatedTranansaction = transactionService.editTransaction(id, transaction);
         Integer totalRewardPoints = transactionService.getRewardPoints(updatedTranansaction.getCustomerId());
@@ -82,18 +110,40 @@ public class TransactionController
     	
     }
 
+	
+	@Operation(summary = "Delete a transaction", description = "Allow admin to delete a transaction")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Transaction deleted successfully"),
+			@ApiResponse(responseCode = "403", description = "Forbidden for non admin user")
+	})
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+	@SecurityRequirement(name = "basicAuth")
     public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.ok("Transaction deleted successfully");
     }
 
+	
+	
+	
+	
+	@Operation(summary = "Get reward point by customer ID", description = "Fetch total reward point for a specific customer.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Reward points fetched successfully"),
+			@ApiResponse(responseCode = "404", description = "Customer not found")
+	})
     @GetMapping("/rewards/{customerId}")
     public ResponseEntity<Integer> getRewardPoints(@PathVariable Long customerId) {
         return ResponseEntity.ok(transactionService.getRewardPoints(customerId));
     }
-
+	
+	
+	
+	@Operation(summary = "Get all reward points", description = "Fetch reward points for all customers.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Reward points fetched successfully")
+	})
     @GetMapping("/rewards")
     public ResponseEntity<List<RewardPoints>> getAllRewardPoints() {
         return ResponseEntity.ok(transactionService.getAllRewardPoints());
