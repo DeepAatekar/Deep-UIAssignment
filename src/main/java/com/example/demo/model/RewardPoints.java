@@ -37,6 +37,25 @@ public class RewardPoints
 
 	
 
+	
+
+	public RewardPoints() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public RewardPoints(Long id, @NotNull(message = "Customer ID is mandatory") Long customerId,
+			@NotNull(message = "Month is mandatory") @Min(value = 1, message = "Month must be between 1 and 12") Integer month,
+			@NotNull(message = "Year is mandatory") Integer year,
+			@NotNull(message = "Points are mandatory") @Min(value = 0, message = "Points must be greater than or equal to 0") Integer points) {
+		super();
+		this.id = id;
+		this.customerId = customerId;
+		this.month = month;
+		this.year = year;
+		this.points = points;
+	}
+
 	public Long getId() {
 		return id;
 	}

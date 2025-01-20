@@ -105,56 +105,50 @@ public class TransactionService
 	    }
 	    */
 	    
-	    public Map<Month, Integer> getMonthlyRewardPoints(Long customerId)
-	    {
-	    	logger.info("Fetching monthly reward points for customerId: {}", customerId);
-	    	
-	    	List<RewardPoints> rewardPointsList = rewardPointsRepository.findAll()
-	    			.stream()
-	    			.filter(reward->reward.getCustomerId().equals(customerId))
-	    			.collect(Collectors.toList());
-	    	
-	    	return rewardPointsList.stream()
-	    			.collect(Collectors.groupingBy(
-	    					reward -> Month.of(reward.getMonth()),
-	    					Collectors.summingInt(RewardPoints::getPoints)
-	    					));
-	    	
-	    }
+		public Map<Month, Integer> getMonthlyRewardPoints(Long customerId) 
+		{
+			logger.info("Fetching monthly reward points for customerId: {}", customerId);
+
+			List<RewardPoints> rewardPointsList = rewardPointsRepository.findAll().stream()
+					.filter(reward -> reward.getCustomerId().equals(customerId)).collect(Collectors.toList());
+
+			return rewardPointsList.stream().collect(Collectors.groupingBy(reward -> Month.of(reward.getMonth()),
+					Collectors.summingInt(RewardPoints::getPoints)));
+
+		}
 	    
 	    
-	        private int calculateRewardPoints(CustomerTransaction transaction) {
-	        double amount = transaction.getAmount();
-	        int points = 0;
-	        
-	        logger.info("Calculating reward points for transaction: {}", transaction);
+	       public int calculateRewardPoints(CustomerTransaction transaction)
+	        {
+				double amount = transaction.getAmount();
+				int points = 0;
 
-	        if (amount > 100) {
-	            points += (amount - 100) * 2;
-	            logger.debug("Points for amount over $100: {}", (amount - 100) * 2);
-	            amount = 100;
-	        }
-	        else if (amount > 50) {
-	            points += (amount - 50)*1;
-	            logger.debug("Points for amount between $50 and $100: {}", (amount - 50)*1);
-	        }
-	        
-	       
-	        
-	        
-	        
-	        RewardPoints rewardPoints = new RewardPoints();
-	        rewardPoints.setCustomerId(transaction.getCustomerId());
-	        rewardPoints.setMonth(transaction.getDate().getMonthValue());
-	        rewardPoints.setYear(transaction.getDate().getYear());
-	        rewardPoints.setPoints(points);
+				logger.info("Calculating reward points for transaction: {}", transaction);
 
-	        rewardPointsRepository.save(rewardPoints);
-	        
-	        logger.info("Reward points calculated: {}", points);
-	        logger.info("Reward points saved: {}", rewardPoints);
-	        
-	        return points;
+				if (amount > 100) 
+				{
+					points += (amount - 100) * 2;
+					logger.debug("Points for amount over $100: {}", (amount - 100) * 2);
+					//amount = 100;
+				} 
+				else if (amount > 50) 
+				{
+					points += (amount - 50) * 1;
+					logger.debug("Points for amount between $50 and $100: {}", (amount - 50) * 1);
+				}
+
+				RewardPoints rewardPoints = new RewardPoints();
+				rewardPoints.setCustomerId(transaction.getCustomerId());
+				rewardPoints.setMonth(transaction.getDate().getMonthValue());
+				rewardPoints.setYear(transaction.getDate().getYear());
+				rewardPoints.setPoints(points);
+
+				rewardPointsRepository.save(rewardPoints);
+
+				logger.info("Reward points calculated: {}", points);
+				logger.info("Reward points saved: {}", rewardPoints);
+
+				return points;
 
 	    } 
 	    

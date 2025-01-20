@@ -100,7 +100,8 @@ public class TransactionController
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
 	@SecurityRequirement(name = "basicAuth")
-    public ResponseEntity<TransactionResponse> editTransaction(@PathVariable Long id, @RequestBody CustomerTransaction transaction) {
+    public ResponseEntity<TransactionResponse> editTransaction(@PathVariable Long id, @RequestBody CustomerTransaction transaction)
+	{
         CustomerTransaction updatedTranansaction = transactionService.editTransaction(id, transaction);
         Integer totalRewardPoints = transactionService.getRewardPoints(updatedTranansaction.getCustomerId());
     	Map<Month, Integer> monthlyRewardPoints = transactionService.getMonthlyRewardPoints(updatedTranansaction.getCustomerId());
