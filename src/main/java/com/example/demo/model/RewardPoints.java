@@ -7,7 +7,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
+
+@Data
+@Builder
 @Entity
 @Schema(description = "Respresent the reward points earned by a customer in a specific month and year.")
 public class RewardPoints 

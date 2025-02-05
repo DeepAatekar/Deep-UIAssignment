@@ -82,28 +82,7 @@ public class TransactionService
 
 	    
 	    
-	   /* public Map<Long, Map<Month,Integer>> calculateMonthlyRewardPoints()
-	    {
-	    	
-	    	//Fetch all transaction within the last  three months
-	    	List<CustomerTransaction> transactions = transactionRepository.findAll()
-	    			.stream()
-	    			.filter(t->t.getDate().isAfter(LocalDate.now().minusDays(3)))
-	    			.collect(Collectors.toList());
-	    	
-	    	//Grouping transaction by customer and month
-			return transactions.stream()
-					.collect(Collectors.groupingBy(
-							CustomerTransaction::getCustomerId, 
-							Collectors.groupingBy(
-									t->t.getDate().getMonth(),
-									Collectors.summingInt(this::calculateRewardPoints)
-									) 
-							
-							));
-	    	
-	    }
-	    */
+	  
 	    
 		public Map<Month, Integer> getMonthlyRewardPoints(Long customerId) 
 		{
@@ -137,11 +116,18 @@ public class TransactionService
 					logger.debug("Points for amount between $50 and $100: {}", (amount - 50) * 1);
 				}
 
-				RewardPoints rewardPoints = new RewardPoints();
-				rewardPoints.setCustomerId(transaction.getCustomerId());
-				rewardPoints.setMonth(transaction.getDate().getMonthValue());
-				rewardPoints.setYear(transaction.getDate().getYear());
-				rewardPoints.setPoints(points);
+//				RewardPoints rewardPoints = new RewardPoints();
+//				rewardPoints.setCustomerId(transaction.getCustomerId());
+//				rewardPoints.setMonth(transaction.getDate().getMonthValue());
+//				rewardPoints.setYear(transaction.getDate().getYear());
+//				rewardPoints.setPoints(points);
+				
+				RewardPoints rewardPoints = new RewardPoints().builder()
+						.customerId(transaction.getCustomerId())
+					    .month(transaction.getDate().getMonthValue())
+					    .year(transaction.getDate().getYear())
+					    .points(points)
+					    .build();
 
 				rewardPointsRepository.save(rewardPoints);
 

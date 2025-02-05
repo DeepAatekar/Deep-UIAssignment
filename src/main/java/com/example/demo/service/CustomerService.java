@@ -28,7 +28,7 @@ public class CustomerService
 	public Customer registerCustomer(Customer customer) 
 	{
 		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        //customer.setRoles("ROLE_USER");
+        
         
         Long zoneId = customer.getZone().getId();
         Optional<Zone> zone = zoneRepository.findById(zoneId);
@@ -58,21 +58,7 @@ public class CustomerService
         return "Customer logged off successfully";
     }
 	
-	/*public int pointsCalculation(Double dollor) 
-	{
-		int points = 0;
-		if(dollor > 100) 
-		{
-			points = points +(dollor.intValue()-100)*2;
-		}
-		if(dollor>50 && dollor<100) 
-		{
-			points = (int) (Math.min(dollor, 100)-50);
-		}
-		
-		return points;
-		
-	}*/
+	
 	
 	public List<Customer> getCustomerByZoneId(Long zoneId)
 	{
